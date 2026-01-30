@@ -1,0 +1,29 @@
+OILS AND FATS INVENTORY
+
+Olive Oil (Extra Virgin)
+Current Stock: 3.5 liters
+Location: Pantry Shelf A
+Last Updated: January 28, 2026
+Unit Price: $12.50/liter
+Supplier: Mediterranean Imports Ltd.
+
+Vegetable Oil
+Current Stock: 2.0 liters
+Location: Pantry Shelf A
+Last Updated: January 28, 2026
+Unit Price: $4.00/liter
+Supplier: Local Wholesalers Inc.
+
+Butter (Unsalted)
+Current Stock: 1.2 kilograms
+Location: Walk-in Refrigerator
+Last Updated: January 28, 2026
+Unit Price: $8.00/kg
+Supplier: Dairy Fresh Co.
+
+Coconut Oil
+Current Stock: 0.8 liters
+Location: Pantry Shelf B
+Last Updated: January 28, 2026
+Unit Price: $15.00/liter
+Supplier: Tropical Goods Import

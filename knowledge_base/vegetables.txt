@@ -1,0 +1,29 @@
+VEGETABLES INVENTORY
+
+Tomatoes (Roma)
+Current Stock: 12.0 kilograms
+Location: Walk-in Refrigerator
+Last Updated: January 28, 2026
+Unit Price: $3.20/kg
+Supplier: Fresh Farm Produce
+
+Onions (Yellow)
+Current Stock: 8.5 kilograms
+Location: Dry Storage Room
+Last Updated: January 28, 2026
+Unit Price: $1.80/kg
+Supplier: Fresh Farm Produce
+
+Garlic
+Current Stock: 0.6 kilograms
+Location: Dry Storage Room
+Last Updated: January 28, 2026
+Unit Price: $12.00/kg
+Supplier: Local Organic Growers
+
+Bell Peppers (Mixed)
+Current Stock: 4.0 kilograms
+Location: Walk-in Refrigerator
+Last Updated: January 28, 2026
+Unit Price: $4.50/kg
+Supplier: Fresh Farm Produce
