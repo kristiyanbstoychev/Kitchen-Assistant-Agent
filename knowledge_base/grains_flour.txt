@@ -1,0 +1,29 @@
+GRAINS AND FLOUR INVENTORY
+
+All-Purpose Flour
+Current Stock: 25.0 kilograms
+Location: Dry Storage Room
+Last Updated: January 28, 2026
+Unit Price: $1.20/kg
+Supplier: Grain Mills Direct
+
+Bread Flour
+Current Stock: 15.0 kilograms
+Location: Dry Storage Room
+Last Updated: January 28, 2026
+Unit Price: $1.50/kg
+Supplier: Grain Mills Direct
+
+Rice (Basmati)
+Current Stock: 10.0 kilograms
+Location: Dry Storage Room
+Last Updated: January 28, 2026
+Unit Price: $3.50/kg
+Supplier: Asian Specialty Foods
+
+Pasta (Spaghetti)
+Current Stock: 8.0 kilograms
+Location: Pantry Shelf C
+Last Updated: January 28, 2026
+Unit Price: $2.80/kg
+Supplier: Italian Imports Co.

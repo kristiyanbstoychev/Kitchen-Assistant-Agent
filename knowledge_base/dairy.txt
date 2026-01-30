@@ -1,0 +1,31 @@
+DAIRY PRODUCTS INVENTORY
+
+Whole Milk
+Current Stock: 15.0 liters
+Location: Walk-in Refrigerator
+Last Updated: January 28, 2026
+Unit Price: $1.50/liter
+Supplier: Dairy Fresh Co.
+Expiration: February 2, 2026
+
+Heavy Cream
+Current Stock: 3.0 liters
+Location: Walk-in Refrigerator
+Last Updated: January 28, 2026
+Unit Price: $5.00/liter
+Supplier: Dairy Fresh Co.
+Expiration: February 5, 2026
+
+Mozzarella Cheese
+Current Stock: 6.0 kilograms
+Location: Walk-in Refrigerator
+Last Updated: January 28, 2026
+Unit Price: $9.00/kg
+Supplier: Artisan Cheese Makers
+
+Parmesan Cheese
+Current Stock: 2.5 kilograms
+Location: Walk-in Refrigerator
+Last Updated: January 28, 2026
+Unit Price: $18.00/kg
+Supplier: Italian Imports Co.
