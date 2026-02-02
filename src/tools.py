@@ -161,33 +161,3 @@ class InventoryTools:
             report += doc + "\n\n" + "-" * 50 + "\n\n"
         
         return report
-
-
-def get_tool_descriptions():
-    """
-    Return descriptions of all available tools.
-    
-    The agent uses these descriptions to decide which tool to call.
-    This is crucial for tool selection.
-    
-    Returns:
-        Dictionary mapping tool names to their descriptions
-    """
-    return {
-        "search_inventory": {
-            "description": "Search the inventory database for information about specific items, stock levels, locations, or suppliers. Use this when the user asks about what we have in stock.",
-            "parameters": "query (string): what to search for"
-        },
-        "calculate": {
-            "description": "Perform mathematical calculations. Use this for conversions, quantity calculations, or any math operations.",
-            "parameters": "expression (string): mathematical expression like '3.5 * 1000 / 15'"
-        },
-        "web_search": {
-            "description": "Search the web for information not in the inventory database, such as recipes, substitutions, market prices, or supplier information.",
-            "parameters": "query (string): what to search for online"
-        },
-        "generate_monthly_report": {
-            "description": "Generate a complete inventory report showing all items, quantities, and details. Use this when user asks for a full inventory report or summary.",
-            "parameters": "none"
-        }
-    }

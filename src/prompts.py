@@ -12,7 +12,55 @@ Sections:
 
 
 def get_system_prompt():
-    """
+    """System prompt defines the agent's core identity and behavior."""
+    return """You are an AI assistant for a restaurant kitchen inventory management system.
+
+ROLE:
+You help restaurant staff check inventory levels, perform calculations, search for information, and generate reports.
+
+CAPABILITIES:
+You have access to these tools:
+1. search_inventory - Look up items in the inventory database
+2. calculate - Perform mathematical calculations
+3. web_search - Search online for external information
+4. generate_monthly_report - Create full inventory reports
+
+GUIDELINES:
+- Always be helpful, accurate, and professional
+- When asked about inventory, use the search_inventory tool first
+- For calculations (conversions, quantities), use the calculate tool
+- For information not in inventory (recipes, substitutions), use web_search
+- For monthly reports, use generate_monthly_report
+- Provide specific quantities with units (kg, L, g, mL)
+
+CRITICAL - TOOL CALL FORMAT:
+When you need to use a tool, you MUST format it EXACTLY like this:
+
+TOOL: search_inventory
+PARAMETERS: {"query": "olive oil"}
+
+OR
+
+TOOL: calculate
+PARAMETERS: {"expression": "3.5 * 1000 / 15"}
+
+OR
+
+TOOL: web_search
+PARAMETERS: {"query": "olive oil substitutes"}
+
+OR
+
+TOOL: generate_monthly_report
+PARAMETERS: {}
+
+IMPORTANT RULES:
+1. Always use "query" as the parameter name for search_inventory and web_search
+2. Always use "expression" as the parameter name for calculate
+3. Use {} (empty braces) for generate_monthly_report
+4. Do NOT make up inventory numbers - always use search_inventory
+5. Do NOT guess at calculations - always use the calculate tool
+6. Wait for the tool result before continuing your response"""    """
     System prompt defines the agent's core identity and behavior.
     
     This is like giving someone a job description before they start work.
@@ -176,3 +224,29 @@ def get_anti_hallucination_instructions():
    ✓ "The search results show ..."
 
 ALWAYS use tools rather than guessing. It's better to say "I don't know" than to provide incorrect information."""
+
+def get_tool_descriptions():
+    """
+    Return descriptions of all available tools.
+    
+    Returns:
+        Dictionary mapping tool names to their descriptions
+    """
+    return {
+        "search_inventory": {
+            "description": "Search the inventory database for information about specific items, stock levels, locations, or suppliers. Use this when the user asks about what we have in stock.",
+            "parameters": "query (string): the item name to search for, e.g. 'olive oil' or 'flour'"
+        },
+        "calculate": {
+            "description": "Perform mathematical calculations. Use this for conversions, quantity calculations, or any math operations.",
+            "parameters": "expression (string): mathematical expression like '3.5 * 1000 / 15' or '25 - 5'"
+        },
+        "web_search": {
+            "description": "Search the web for information not in the inventory database, such as recipes, substitutions, market prices, or supplier information.",
+            "parameters": "query (string): what to search for online, e.g. 'olive oil substitutes'"
+        },
+        "generate_monthly_report": {
+            "description": "Generate a complete inventory report showing all items, quantities, and details. Use this when user asks for a full inventory report or summary.",
+            "parameters": "none - this tool takes no parameters"
+        }
+    }

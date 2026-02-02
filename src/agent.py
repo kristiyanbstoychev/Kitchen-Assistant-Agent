@@ -1,11 +1,6 @@
 """
 Main Agent Logic for Kitchen Inventory Assistant
-
-This is the brain of the agent. It:
-1. Receives user queries
-2. Decides which tools to use
-3. Calls the LLM with appropriate context
-4. Returns formatted responses
+Updated for Python 3.14 compatibility
 """
 
 import re
@@ -22,14 +17,7 @@ from src.tools import InventoryTools
 
 
 class KitchenInventoryAgent:
-    """
-    The main AI agent class.
-    
-    Think of this as the agent's "brain" that coordinates:
-    - Understanding user requests
-    - Calling tools when needed
-    - Generating responses via LLM
-    """
+    """The main AI agent class."""
     
     def __init__(self, vector_store):
         """
@@ -56,17 +44,15 @@ class KitchenInventoryAgent:
             
         Returns:
             LLM's text response
-            
-        How it works:
-        1. Build request payload with prompt and system message
-        2. Send to Ollama API
-        3. Stream response tokens
-        4. Return complete response
         """
         payload = {
             "model": self.model,
             "prompt": prompt,
-            "stream": False  # Get complete response at once
+            "stream": False,
+            "options": {
+                "temperature": 0.7,
+                "num_predict": 500
+            }
         }
         
         # Add system prompt if provided
@@ -74,21 +60,25 @@ class KitchenInventoryAgent:
             payload["system"] = system_prompt
         
         try:
-            response = requests.post(self.ollama_url, json=payload)
+            response = requests.post(
+                self.ollama_url, 
+                json=payload,
+                timeout=60  # 60 second timeout
+            )
             response.raise_for_status()
             result = response.json()
             return result.get("response", "")
         
+        except requests.exceptions.Timeout:
+            return "Error: Request timed out. The model may be overloaded."
+        except requests.exceptions.RequestException as e:
+            return f"Error calling LLM: {str(e)}\nMake sure Ollama is running."
         except Exception as e:
-            return f"Error calling LLM: {str(e)}"
+            return f"Unexpected error: {str(e)}"
     
     def parse_tool_call(self, llm_response):
         """
         Extract tool calls from LLM response.
-        
-        The LLM indicates tool usage with special format:
-        TOOL: tool_name
-        PARAMETERS: {"param": "value"}
         
         Args:
             llm_response: Text response from LLM
@@ -97,23 +87,22 @@ class KitchenInventoryAgent:
             Dictionary with tool_name and parameters, or None
         """
         # Look for TOOL: pattern
-        tool_match = re.search(r'TOOL:\s*(\w+)', llm_response)
-        params_match = re.search(r'PARAMETERS:\s*({.*?})', llm_response, re.DOTALL)
+        tool_match = re.search(r'TOOL:\s*(\w+)', llm_response, re.IGNORECASE)
+        params_match = re.search(r'PARAMETERS:\s*({.*?})', llm_response, re.DOTALL | re.IGNORECASE)
         
         if tool_match:
-            tool_name = tool_match.group(1)
+            tool_name = tool_match.group(1).lower()
             
             # Parse parameters if present
             params = {}
             if params_match:
+                param_str = params_match.group(1)
                 try:
-                    params = json.loads(params_match.group(1))
-                except json.JSONDecodeError:
-                    # If JSON parsing fails, try simple key:value format
-                    params_text = params_match.group(1).strip('{}')
-                    if ':' in params_text:
-                        key, value = params_text.split(':', 1)
-                        params = {key.strip().strip('"'): value.strip().strip('"')}
+                    # Try JSON parsing
+                    params = json.loads(param_str)
+                except (json.JSONDecodeError, ValueError):
+                    # Fallback: treat as simple query
+                    params = {"query": param_str.strip('{}').strip()}
             
             return {"tool": tool_name, "parameters": params}
         
@@ -139,24 +128,46 @@ class KitchenInventoryAgent:
         }
         
         if tool_name not in tool_map:
-            return f"Unknown tool: {tool_name}"
+            return f"Unknown tool: {tool_name}. Available tools: {', '.join(tool_map.keys())}"
         
         try:
             tool_func = tool_map[tool_name]
             
             # Different tools expect different parameters
             if tool_name == "generate_monthly_report":
-                # This tool takes no parameters
                 return tool_func()
+            
             elif tool_name == "search_inventory":
-                query = parameters.get("query", "")
+                # Extract query from various possible parameter names
+                query = (
+                    parameters.get("query") or 
+                    parameters.get("item") or 
+                    parameters.get("search_term") or 
+                    parameters.get("search") or
+                    ""
+                )
                 return tool_func(query)
+            
             elif tool_name == "calculate":
-                expression = parameters.get("expression", "")
+                # Extract expression from various possible parameter names
+                expression = (
+                    parameters.get("expression") or 
+                    parameters.get("calculation") or 
+                    parameters.get("query") or
+                    ""
+                )
                 return tool_func(expression)
+            
             elif tool_name == "web_search":
-                query = parameters.get("query", "")
+                # Extract query from various possible parameter names
+                query = (
+                    parameters.get("query") or 
+                    parameters.get("search_term") or 
+                    parameters.get("search") or
+                    ""
+                )
                 return tool_func(query)
+            
             else:
                 return "Tool execution error: Unknown parameter format"
         
@@ -167,20 +178,11 @@ class KitchenInventoryAgent:
         """
         Main processing function: handles the entire query → response flow.
         
-        This is the core logic that ties everything together.
-        
         Args:
             user_query: User's question/request
             
         Returns:
             Final response string
-            
-        Process:
-        1. Analyze query to determine if tools are needed
-        2. If tools needed, execute them
-        3. Build context with tool results
-        4. Generate final response via LLM
-        5. Return formatted answer
         """
         print(f"\n{'='*60}")
         print(f"Processing query: {user_query}")
@@ -227,7 +229,7 @@ Using the tool results above, answer the user's query accurately and concisely.
         # Step 4: Generate final response
         final_response = self.call_llm(final_prompt, system_prompt)
         
-        # Step 5: Store in conversation history (for potential multi-turn conversations)
+        # Step 5: Store in conversation history
         self.conversation_history.append({
             "user": user_query,
             "agent": final_response
